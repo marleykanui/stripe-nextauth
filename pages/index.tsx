@@ -23,7 +23,14 @@ import { FC } from 'react';
 // Next Types
 import { GetServerSideProps } from 'next';
 
-const Index: FC = () => {
+// Component Level Types
+interface StripePrice extends Stripe.Price {}
+
+interface IndexProps {
+  prices: StripePrice[];
+}
+
+const Index: FC<IndexProps> = ({ prices }) => {
   return (
     <div className={styles.container}>
       <div className="flex flex-row">
@@ -34,4 +41,20 @@ const Index: FC = () => {
   );
 };
 
+export const getServerSideProps: GetServerSideProps = async () => {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2020-08-27',
+  });
+  const prices = await stripe.prices.list({
+    active: true,
+    limit: 10,
+    expand: [],
+  });
+
+  return {
+    props: {
+      prices: prices.data,
+    },
+  };
+};
 export default Index;
