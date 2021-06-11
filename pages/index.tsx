@@ -35,8 +35,8 @@ interface IndexProps {
 const Index: FC<IndexProps> = ({ prices }) => {
   return (
     <div className={styles.container}>
-      <div className="flex flex-col">
-        {prices.map(({ id, product, unit_amount }) => {
+      <div className="flex flex-row">
+        {prices.reverse().map(({ id, product, unit_amount }) => {
           return (
             <div key={id}>
               <ProductCard

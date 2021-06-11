@@ -16,7 +16,10 @@ const ProductCard: FC<ProductCardProps> = ({
   return (
     <div className="flex flex-col text-center p-8">
       <div>{name}</div>
-      <Image src={image} alt={name} height={100} width={50} />
+      <div>
+        <Image src={image} alt={name} height={132} width={215} />
+      </div>
+
       <div style={{ width: '15vw' }}>{description}</div>
       <div>{`$${price / 100}.00`}</div>
     </div>
