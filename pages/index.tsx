@@ -24,18 +24,30 @@ import { FC } from 'react';
 import { GetServerSideProps } from 'next';
 
 // Component Level Types
-interface StripePrice extends Stripe.Price {}
+interface StripePrice extends Stripe.Price {
+  product: Stripe.Product;
+}
 
 interface IndexProps {
   prices: StripePrice[];
 }
 
 const Index: FC<IndexProps> = ({ prices }) => {
+  console.log(JSON.stringify(prices, null, 2));
   return (
     <div className={styles.container}>
       <div className="flex flex-row">
-        <ProductCard />
-        <ProductCard />
+        {prices.map(({ id, product, unit_amount }) => {
+          return (
+            <div key={id}>
+              <ProductCard
+                name={product.name}
+                description={product.description}
+                price={unit_amount}
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -48,7 +60,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const prices = await stripe.prices.list({
     active: true,
     limit: 10,
-    expand: [],
+    expand: ['data.product'],
   });
 
   return {

@@ -1,7 +1,10 @@
 // React Types
 import { FC } from 'react';
 
-const ProductCard: FC = () => {
+// Component Level Types
+import { ProductCardProps } from './ProductCardTypes';
+
+const ProductCard: FC<ProductCardProps> = ({ name, description, price }) => {
   return <div className="p-4">Product Card</div>;
 };
 
