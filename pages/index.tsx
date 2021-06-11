@@ -33,16 +33,16 @@ interface IndexProps {
 }
 
 const Index: FC<IndexProps> = ({ prices }) => {
-  console.log(JSON.stringify(prices, null, 2));
   return (
     <div className={styles.container}>
-      <div className="flex flex-row">
+      <div className="flex flex-col">
         {prices.map(({ id, product, unit_amount }) => {
           return (
             <div key={id}>
               <ProductCard
                 name={product.name}
                 description={product.description}
+                image={product.images[0]}
                 price={unit_amount}
               />
             </div>
