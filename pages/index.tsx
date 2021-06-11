@@ -33,6 +33,7 @@ interface IndexProps {
 }
 
 const Index: FC<IndexProps> = ({ prices }) => {
+  const handleProductSelect = async (priceId: string) => {};
   return (
     <div className={styles.container}>
       <div className="flex flex-row">
@@ -45,6 +46,7 @@ const Index: FC<IndexProps> = ({ prices }) => {
                 image={product.images[0]}
                 price={unit_amount}
               />
+              <button onClick={() => handleProductSelect(id)}></button>
             </div>
           );
         })}
