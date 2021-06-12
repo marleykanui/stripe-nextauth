@@ -1,41 +1,66 @@
+// React
+import { useEffect } from 'react';
+
 // Use-Shopping-Cart
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart';
-
-// Data
-import { ProductData } from '../1-data/ProductData';
 
 // React Types
 import { FC } from 'react';
 
-const Products: FC = () => {
+// Component Level Types
+import { ProductsProps } from '@/components/cart/0-types/ProductProps';
+
+const Products: FC<ProductsProps> = ({ products }) => {
   const { addItem, removeItem } = useShoppingCart();
+
+  useEffect(() => {}, []);
 
   return (
     <section className="products">
-      {ProductData.map((product) => (
-        <div key={product.sku} className="product">
-          <img src={product.image} alt={product.name} />
-          <h2>{product.name}</h2>
-          <p className="price">
-            {formatCurrencyString({
-              value: product.price,
-              currency: product.currency,
-            })}
-          </p>
-          <button
-            className="cart-style-background"
-            onClick={() => addItem(product)}
-          >
-            Add to cart
-          </button>
-          <button
-            className="cart-style-background"
-            onClick={() => removeItem(product.sku)}
-          >
-            Remove
-          </button>
-        </div>
-      ))}
+      {products.map(
+        ({
+          id,
+          unit_amount,
+          currency,
+          product: { name, description, images },
+        }) => (
+          <div key={id} className="product">
+            <img
+              style={{ width: '10vw', height: '12vh' }}
+              src={images[0]}
+              alt={name}
+            />
+            <h2>{name}</h2>
+            <p className="price">
+              {formatCurrencyString({
+                value: unit_amount,
+                currency: currency,
+              })}
+            </p>
+            <button
+              className="cart-style-background"
+              onClick={() =>
+                addItem({
+                  name,
+                  description,
+                  id,
+                  currency,
+                  price: unit_amount,
+                  image: images[0],
+                } as any)
+              }
+            >
+              Add to cart
+            </button>
+            <button
+              className="cart-style-background"
+              onClick={() => removeItem(id)}
+            >
+              Remove
+            </button>
+          </div>
+        )
+      )}
     </section>
   );
 };
