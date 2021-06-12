@@ -10,7 +10,7 @@ import { NextPage } from 'next';
 const IndexPage: NextPage = () => {
   return (
     <Layout title="Home | Next.js + TypeScript Example">
-      <Link href="/use-shopping-cart">
+      <Link href="/shoppingcart">
         <a className="card cart-style-background">
           <h2 className="bottom">Use Shopping Cart</h2>
         </a>
