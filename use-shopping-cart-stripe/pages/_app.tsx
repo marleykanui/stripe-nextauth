@@ -1,3 +1,6 @@
+// Styles
+import '@/styles/styles.css';
+
 // Component Level Types
 import type { AppProps } from 'next/app';
 
