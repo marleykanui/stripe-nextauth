@@ -194,6 +194,10 @@ button:disabled {
   box-shadow: 20px 20px 60px #614b91, -20px -20px 60px #bd91ff;
 }
 .cart-style-background {
+  height: 2rem;
+  text-align: center;
+  width: 8rem;
+  font-size: 1rem;
   background: teal;
   transition: box-shadow var(--transition-duration);
 }

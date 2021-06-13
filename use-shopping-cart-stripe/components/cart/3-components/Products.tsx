@@ -1,6 +1,3 @@
-// React
-import { useEffect } from 'react';
-
 // Use-Shopping-Cart
 import { useShoppingCart, formatCurrencyString } from 'use-shopping-cart';
 
@@ -11,9 +8,7 @@ import { FC } from 'react';
 import { ProductsProps } from '@/components/cart/0-types/ProductProps';
 
 const Products: FC<ProductsProps> = ({ products }) => {
-  const { addItem, removeItem } = useShoppingCart();
-
-  useEffect(() => {}, []);
+  const { addItem, removeItem, decrementItem } = useShoppingCart();
 
   return (
     <section className="products">
@@ -26,7 +21,7 @@ const Products: FC<ProductsProps> = ({ products }) => {
         }) => (
           <div key={id} className="product">
             <img
-              style={{ width: '10vw', height: '12vh' }}
+              style={{ width: '8rem', height: '4rem' }}
               src={images[0]}
               alt={name}
             />
@@ -51,6 +46,12 @@ const Products: FC<ProductsProps> = ({ products }) => {
               }
             >
               Add to cart
+            </button>
+            <button
+              className="cart-style-background"
+              onClick={() => decrementItem(id)}
+            >
+              Decrease
             </button>
             <button
               className="cart-style-background"

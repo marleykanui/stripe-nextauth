@@ -17,7 +17,7 @@ const DonatePage: NextPage<ProductsProps> = ({ products }) => {
   return (
     <Layout title="Shopping Cart | Next.js + TypeScript Example">
       <Cart>
-        <CartSummary />
+        <CartSummary products={products} />
         <Products products={products} />
       </Cart>
     </Layout>
