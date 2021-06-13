@@ -21,6 +21,11 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "utils/1-stripe/validateCartItems.ts"
+  ],
   "exclude": ["node_modules"]
 }
