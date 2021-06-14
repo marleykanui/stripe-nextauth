@@ -59,14 +59,21 @@ export const validateCartItems = (
 
   for (const itemId in cart) {
     const product = cart[itemId];
-    const inventoryItem = inventory.find(
+    const inventoryItemId = inventory.find(
       (currentProduct) => currentProduct.id === itemId
     );
 
-    if (!inventoryItem) throw new Error(`Product ${itemId} not found!`);
+    if (!inventoryItemId) throw new Error(`Product ${itemId} not found`);
+
+    const inventoryItemPrice = inventory.find(
+      (currentProduct) => currentProduct.unit_amount === product.price
+    );
+
+    if (!inventoryItemPrice)
+      throw new Error(`Product ${itemId} price does not match inventory price`);
 
     const item = {
-      price: inventoryItem.id,
+      price: inventoryItemId.id,
       quantity: product.quantity,
     };
     validatedCartItems.push(item);

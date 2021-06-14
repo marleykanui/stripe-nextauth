@@ -7,14 +7,15 @@ import { validateCartItems } from '@/utils/1-stripe/validateCartItems';
 // Next Types
 import { NextApiRequest, NextApiResponse } from 'next';
 
+// Stripe Instance
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2020-08-27',
 });
 
-export default async function handler(
+const handleCheckoutSession = async (
   req: NextApiRequest,
   res: NextApiResponse
-) {
+) => {
   if (req.method === 'POST') {
     try {
       const cartItems = req.body;
@@ -46,4 +47,6 @@ export default async function handler(
     res.setHeader('Allow', 'POST');
     res.status(405).end('Method Not Allowed');
   }
-}
+};
+
+export default handleCheckoutSession;
