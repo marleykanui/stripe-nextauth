@@ -1,19 +1,24 @@
-import { NextPage } from 'next';
+// Next
 import { useRouter } from 'next/router';
 
-import Layout from '../components/Layout';
-import PrintObject from '../components/PrintObject';
-import Cart from '../components/Cart';
-import ClearCart from '../components/ClearCart';
+// Components
+import Layout from '@/components/layout/3-components/Layout';
+import Cart from '@/components/cart/3-components/Cart';
+import PrintObject from '@/components/cart/3-components/PrintObject';
+import ClearCart from '@/components/cart/3-components/ClearCart';
 
-import { fetchGetJSON } from '../utils/api-helpers';
+// Utils
+import { fetchGetJSON } from '@/utils/0-api/fetchGetJson';
+
+// SWR
 import useSWR from 'swr';
+
+// Next Types
+import { NextPage } from 'next';
 
 const ResultPage: NextPage = () => {
   const router = useRouter();
 
-  // Fetch CheckoutSession from static page via
-  // https://nextjs.org/docs/basic-features/data-fetching#static-generation
   const { data, error } = useSWR(
     router.query.session_id
       ? `/api/checkout_sessions/${router.query.session_id}`

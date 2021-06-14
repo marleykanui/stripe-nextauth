@@ -34,7 +34,7 @@ const handleCheckoutSession = async (
         mode: 'payment',
         payment_method_types: ['card'],
         line_items,
-        success_url: `${req.headers.origin}/result?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${req.headers.origin}/sessionconfirm?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.headers.origin}/shoppingcart`,
       };
       const checkoutSession: Stripe.Checkout.Session =
