@@ -2,7 +2,7 @@
 import { CartProvider } from 'use-shopping-cart';
 
 // Stripe Instance
-import getStripe from '@/utils/1-stripe/getStripe';
+import getStripe from '@/utils/2-stripe/getStripe';
 
 // Cart Config Params
 import * as config from '@/config/index';
