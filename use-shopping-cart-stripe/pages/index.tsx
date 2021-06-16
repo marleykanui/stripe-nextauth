@@ -1,3 +1,5 @@
+// React
+import { useEffect } from 'react';
 // Next
 import Link from 'next/link';
 
@@ -16,6 +18,23 @@ interface ServerConnectionProps {
 }
 
 const IndexPage: NextPage<ServerConnectionProps> = ({ properties }) => {
+  // useEffect(() => {
+  //   create({
+  //     recrd: '',
+  //     vesslterms: '',
+  //     feature_type: 'Marley Kanui',
+  //     chart: 'US,U1,graph,DNC H1409860',
+  //     latdec: 9.3547792,
+  //     londec: -79.9081268,
+  //     gp_quality: '',
+  //     depth: '',
+  //     sounding_type: '',
+  //     history: '',
+  //     quasou: '',
+  //     watlev: 'always dry',
+  //     coordinates: [-79.9081268, 9.3547792],
+  //   });
+  // }, []);
   return (
     <Layout title="Home | Next.js + TypeScript Example">
       <pre style={{ height: '20rem', width: '20rem' }}>
@@ -33,11 +52,7 @@ const IndexPage: NextPage<ServerConnectionProps> = ({ properties }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { db } = await connectToDatabase();
 
-  const data = await db
-    .collection('listingsAndReviews')
-    .find({})
-    .limit(1)
-    .toArray();
+  const data = await db.collection('shipwrecks').find({}).limit(1).toArray();
 
   const properties = JSON.parse(JSON.stringify(data));
 
