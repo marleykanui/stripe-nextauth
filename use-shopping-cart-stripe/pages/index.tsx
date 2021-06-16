@@ -1,7 +1,11 @@
 // React
 import { useEffect } from 'react';
+
 // Next
 import Link from 'next/link';
+
+// Next-Auth
+import { signIn, signOut, useSession } from 'next-auth/client';
 
 // Components
 import Layout from '@/components/layout/3-components/Layout';
@@ -18,33 +22,32 @@ interface ServerConnectionProps {
 }
 
 const IndexPage: NextPage<ServerConnectionProps> = ({ properties }) => {
-  // useEffect(() => {
-  //   create({
-  //     recrd: '',
-  //     vesslterms: '',
-  //     feature_type: 'Marley Kanui',
-  //     chart: 'US,U1,graph,DNC H1409860',
-  //     latdec: 9.3547792,
-  //     londec: -79.9081268,
-  //     gp_quality: '',
-  //     depth: '',
-  //     sounding_type: '',
-  //     history: '',
-  //     quasou: '',
-  //     watlev: 'always dry',
-  //     coordinates: [-79.9081268, 9.3547792],
-  //   });
-  // }, []);
+  const [session, loading] = useSession();
   return (
     <Layout title="Home | Next.js + TypeScript Example">
-      <pre style={{ height: '20rem', width: '20rem' }}>
-        {JSON.stringify(properties, null, 2)}
-      </pre>
-      <Link href="/shoppingcart">
-        <a>
-          <h2>Use Shopping Cart</h2>
-        </a>
-      </Link>
+      {!session ? (
+        <>
+          <h1>Not Signed In</h1>
+          <br />
+          {/* @ts-ignore */}
+          <button onClick={signIn}>Sign In</button>
+        </>
+      ) : (
+        <>
+          <h1>Signed as {session.user.email}</h1>
+          <br />
+          {/* @ts-ignore */}
+          <button onClick={signOut}>Sign Out</button>
+          <pre style={{ height: '20rem', width: '20rem' }}>
+            {JSON.stringify(properties, null, 2)}
+          </pre>
+          <Link href="/shoppingcart">
+            <a>
+              <h2>Use Shopping Cart</h2>
+            </a>
+          </Link>
+        </>
+      )}
     </Layout>
   );
 };

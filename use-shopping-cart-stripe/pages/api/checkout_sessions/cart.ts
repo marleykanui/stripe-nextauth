@@ -2,7 +2,7 @@
 import Stripe from 'stripe';
 
 // Custom
-import { validateCartItems } from '@/utils/2-stripe/validateCartItems';
+import { validateCartItems } from '@/utils/3-stripe/validateCartItems';
 
 // Next Types
 import { NextApiRequest, NextApiResponse } from 'next';
