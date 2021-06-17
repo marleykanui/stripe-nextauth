@@ -1,11 +1,14 @@
 // React
 import { useState, useEffect } from 'react';
 
+// Next-Auth
+import { useSession } from 'next-auth/client';
+
 // Use-Shopping-Cart
 import { useShoppingCart } from 'use-shopping-cart';
 
-// Utils
-import { fetchPostJSON } from '@/utils/0-api/fetchPostJson';
+// Axios
+import axios from 'axios';
 
 // React Types
 import { FC, FormEventHandler } from 'react';
@@ -14,7 +17,7 @@ import { FC, FormEventHandler } from 'react';
 import { ProductsProps } from '@/components/cart/0-types/ProductProps';
 
 const CartSummary: FC<ProductsProps> = ({ products }) => {
-  const [loading, setLoading] = useState(false);
+  const [session, loading] = useSession();
   const [cartEmpty, setCartEmpty] = useState(true);
   const {
     formattedTotalPrice,
@@ -28,19 +31,19 @@ const CartSummary: FC<ProductsProps> = ({ products }) => {
 
   const handleCheckout: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    setLoading(true);
 
-    const response = await fetchPostJSON(
-      '/api/checkout_sessions/cart',
-      cartDetails
-    );
+    const response = await axios.post('/api/checkout_sessions/cart', {
+      cartDetails,
+      customerEmail: session.user.email,
+    });
 
-    if (response.statusCode === 500) {
-      console.error(response.message);
+    console.log(response);
+    if (response.status === 500) {
+      console.error(response.statusText);
       return;
     }
 
-    redirectToCheckout({ sessionId: response.id });
+    redirectToCheckout({ sessionId: response.data.id });
   };
 
   return (

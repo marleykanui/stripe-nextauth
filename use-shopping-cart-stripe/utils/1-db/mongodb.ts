@@ -59,7 +59,7 @@ export const connectToDatabase = async () => {
 // Create
 // export const create = async (newEntry: object) => {
 //   const { db } = await connectToDatabase();
-//   const result = await db.collection('shipwrecks').insertOne(newEntry);
+//   const result = await db.collection('collection').insertOne(newEntry);
 
 //   console.log(`New Entry: ${result}`);
 // };
@@ -81,22 +81,6 @@ export const connectToDatabase = async () => {
 
 //   foundEntry ? console.log(foundEntry) : console.log('Listing not Found');
 // };
-
-// create({
-//   recrd: '',
-//   vesslterms: '',
-//   feature_type: 'Marley Kanui',
-//   chart: 'US,U1,graph,DNC H1409860',
-//   latdec: 9.3547792,
-//   londec: -79.9081268,
-//   gp_quality: '',
-//   depth: '',
-//   sounding_type: '',
-//   history: '',
-//   quasou: '',
-//   watlev: 'always dry',
-//   coordinates: [-79.9081268, 9.3547792],
-// });
 
 // creatMultiple([
 //   {

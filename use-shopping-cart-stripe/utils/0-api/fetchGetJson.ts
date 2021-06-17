@@ -6,3 +6,18 @@ export async function fetchGetJSON(url: string) {
     throw new Error(err.message);
   }
 }
+
+// {
+//   $jsonSchema: {
+//     bsonType: 'object',
+//     required: [
+//       'customerId'
+//     ],
+//     properties: {
+//       customerId: {
+//         bsonType: 'string',
+//         description: 'Must be of string Type'
+//       }
+//     }
+//   }
+// }

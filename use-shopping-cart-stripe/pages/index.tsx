@@ -1,6 +1,3 @@
-// React
-import { useEffect } from 'react';
-
 // Next
 import Link from 'next/link';
 
@@ -24,7 +21,7 @@ interface ServerConnectionProps {
 const IndexPage: NextPage<ServerConnectionProps> = ({ properties }) => {
   const [session, loading] = useSession();
   return (
-    <Layout title="Home | Next.js + TypeScript Example">
+    <Layout title="stripe-nextauth-test">
       {!session ? (
         <>
           <h1>Not Signed In</h1>
@@ -39,11 +36,12 @@ const IndexPage: NextPage<ServerConnectionProps> = ({ properties }) => {
           {/* @ts-ignore */}
           <button onClick={signOut}>Sign Out</button>
           <pre style={{ height: '20rem', width: '20rem' }}>
+            purchase data
             {JSON.stringify(properties, null, 2)}
           </pre>
           <Link href="/shoppingcart">
             <a>
-              <h2>Use Shopping Cart</h2>
+              <h2>Go to Product List</h2>
             </a>
           </Link>
         </>

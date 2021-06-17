@@ -18,7 +18,8 @@ const handleCheckoutSession = async (
 ) => {
   if (req.method === 'POST') {
     try {
-      const cartItems = req.body;
+      const cartItems = req.body.cartDetails;
+      const customerEmail = req.body.customerEmail;
       const productInventory = await stripe.prices.list({
         active: true,
         limit: 10,
@@ -34,6 +35,7 @@ const handleCheckoutSession = async (
         mode: 'payment',
         payment_method_types: ['card'],
         line_items,
+        customer_email: customerEmail,
         success_url: `${req.headers.origin}/sessionconfirm?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.headers.origin}/shoppingcart`,
       };

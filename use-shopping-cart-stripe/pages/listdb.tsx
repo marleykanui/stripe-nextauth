@@ -20,7 +20,7 @@ const listdb: FC = () => {
     event.preventDefault();
     setLoading(true);
 
-    const response = await axios.get('/api/db/list', {
+    const response = await axios.get('/api/db/createCustomer', {
       params: {
         collection,
         feature_type: featureType,
