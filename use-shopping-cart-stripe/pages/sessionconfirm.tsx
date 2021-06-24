@@ -7,6 +7,9 @@ import { useRouter } from "next/router";
 // Axios
 import axios from "axios";
 
+// Moment
+import moment from "../node_modules/moment";
+
 // SWR
 import useSWR from "swr";
 
@@ -23,6 +26,7 @@ import ClearCart from "@/components/cart/3-components/ClearCart";
 import { NextPage } from "next";
 
 const ResultPage: NextPage = () => {
+  // New
   const [DBUpdated, setDBUpdated] = useState(false);
   const router = useRouter();
 
@@ -44,21 +48,25 @@ const ResultPage: NextPage = () => {
 
   const dbUpdateWithNewSession = async (sessionData: any) => {
     const {
-      data: { customer, customer_email, payment_intent, line_items },
+      data: {
+        customer,
+        customer_email,
+        line_items,
+        payment_intent: { charges },
+      },
     } = sessionData;
     try {
       await axios.post("/api/db/createCustomer", {
         customer_id: customer,
         customer_email: customer_email,
-        customer_name: payment_intent.charges.data[0].billing_details.name,
+        customer_name: charges.data[0].billing_details.name,
         customer_transactions: [
           {
-            transaction_id: payment_intent.charges.data[0].id,
-            transaction_date: Date.now(),
-            transaction_receipt_url: payment_intent.charges.data[0].receipt_url,
-            payment_method_type:
-              payment_intent.charges.data[0].payment_method_details.type,
-            currency: payment_intent.charges.data[0].currency,
+            transaction_id: charges.data[0].id,
+            transaction_date: moment().format("MMMM Do YYYY, h:mm:ss a"),
+            transaction_receipt_url: charges.data[0].receipt_url,
+            payment_method_type: charges.data[0].payment_method_details.type,
+            currency: charges.data[0].currency,
             purchasedProductData: line_items.data,
           },
         ],
