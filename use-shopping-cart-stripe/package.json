@@ -10,6 +10,7 @@
   "dependencies": {
     "@stripe/stripe-js": "^1.15.0",
     "axios": "^0.21.1",
+    "moment": "^2.29.1",
     "mongodb": "^3.6.9",
     "mongoose": "^5.12.14",
     "next": "10.2.3",

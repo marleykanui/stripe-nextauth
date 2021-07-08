@@ -1,11 +1,14 @@
 // React
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // Next
 import { useRouter } from 'next/router';
 
 // Axios
 import axios from 'axios';
+
+// Moment
+import moment from '../node_modules/moment';
 
 // SWR
 import useSWR from 'swr';
@@ -22,7 +25,8 @@ import ClearCart from '@/components/cart/3-components/ClearCart';
 // Next Types
 import { NextPage } from 'next';
 
-const ResultPage: NextPage = () => {
+const SessionConfirmation: NextPage = () => {
+  const [DBUpdated, setDBUpdated] = useState(false);
   const router = useRouter();
 
   const getSessionData = async (sessionUrl: string) => {
@@ -34,45 +38,50 @@ const ResultPage: NextPage = () => {
     }
   };
 
-  const dbUpdateWithNewSession =
-    // const { data, error } = useSWR(
-    //   router.query.session_id
-    //     ? `/api/checkout_sessions/${router.query.session_id}`
-    //     : null,
-    //   getSessionData
-    // );
+  const { data, error } = useSWR(
+    router.query.session_id
+      ? `/api/checkout_sessions/${router.query.session_id}`
+      : null,
+    getSessionData
+  );
 
-    // const setCustomerId = async () => {
-    //   getSessionData(
-    //     router.query.session_id
-    //       ? `/api/checkout_sessions/${router.query.session_id}`
-    //       : null
-    //   );
-    //   // try {
-    //   await axios.post('/api/db/createCustomer', {
-    //     customer_id: sessionData.customer,
-    // customer_email: data.customer_email,
-    // customer_name: data.charges.data[0].billing_details.name,
-    // customer_transactions: [
-    //   {
-    //     transaction_id: data.charges.data[0].id,
-    //     transaction_date: Date.now(),
-    //     transaction_receipt_url: data.charges.data[0].receipt_url,
-    //     payment_method_type:
-    //       data.charges.data[0].payment_method_details.type,
-    //     currency: data.charges.data[0].currency,
-    //     transaction_amount: data.charges.data[0].amount_captured,
-    //   },
-    // ],
-    // });
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    // };
+  const dbUpdateWithNewSession = async (sessionData: any) => {
+    const {
+      data: {
+        customer,
+        customer_email,
+        line_items,
+        payment_intent: { charges },
+      },
+    } = sessionData;
+    try {
+      await axios.post('/api/db/createCustomer', {
+        customer_id: customer,
+        customer_email: customer_email,
+        customer_name: charges.data[0].billing_details.name,
+        customer_transactions: [
+          {
+            transaction_id: charges.data[0].id,
+            transaction_date: moment().format('MMMM Do YYYY, h:mm:ss a'),
+            transaction_receipt_url: charges.data[0].receipt_url,
+            payment_method_type: charges.data[0].payment_method_details.type,
+            currency: charges.data[0].currency,
+            purchased_product_data: line_items.data,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    useEffect(() => {
-      setCustomerId();
-    }, []);
+  useEffect(() => {
+    if (data && !DBUpdated) {
+      dbUpdateWithNewSession(data);
+      setDBUpdated(true);
+    }
+    console.log(data);
+  }, [data]);
 
   if (error) return <div>failed to load</div>;
 
@@ -91,4 +100,4 @@ const ResultPage: NextPage = () => {
   );
 };
 
-export default ResultPage;
+export default SessionConfirmation;
