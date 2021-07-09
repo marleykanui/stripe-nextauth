@@ -13,9 +13,6 @@ import moment from '../node_modules/moment';
 // SWR
 import useSWR from 'swr';
 
-// Use-Shopping-Cart
-import { useShoppingCart } from 'use-shopping-cart';
-
 // Components
 import Layout from '@/components/layout/3-components/Layout';
 import Cart from '@/components/cart/3-components/Cart';
@@ -56,23 +53,42 @@ const SessionConfirmation: NextPage = () => {
     } = sessionData;
 
     try {
-      const currentCustomer = await axios.post('/api/db/findCustomer', {
+      // Compare current session data to DB data
+      const currentCheckoutSession = await axios.post('/api/db/findCustomer', {
         params: { customer_email },
       });
-      if (currentCustomer) {
+
+      // Set Up Customer Transaction model
+      const customerTransactions = {
+        [charges.data[0].id]: {
+          transactionReceiptUrl: charges.data[0].receipt_url,
+          transactionDate: moment().format('MMMM Do YYYY, h:mm:ss a'),
+          paymentMethodType: charges.data[0].payment_method_details.type,
+          nameOnCard: charges.data[0].billing_details.name,
+          currency: charges.data[0].currency,
+          purchasedProductData: line_items.data,
+        },
+      };
+
+      // If no correlative DB data found: create a new customer w/ transaction history
+      if (!currentCheckoutSession.data) {
         await axios.post('/api/db/createCustomer', {
           customeId: customer,
           customerEmail: customer_email,
-          customerTransactions: {
-            [charges.data[0].id]: {
-              transactionReceiptUrl: charges.data[0].receipt_url,
-              transactionDate: moment().format('MMMM Do YYYY, h:mm:ss a'),
-              paymentMethodType: charges.data[0].payment_method_details.type,
-              nameOnCard: charges.data[0].billing_details.name,
-              currency: charges.data[0].currency,
-              purchasedProductData: line_items.data,
-            },
-          },
+          customerTransactions,
+        });
+        // make sure current transaction id is not in
+        // customer profile already,
+        // if not, append to transaction history object
+      } else if (
+        !Boolean(
+          currentCheckoutSession.data.customerTransactions[charges.data[0].id]
+        )
+      ) {
+        await axios.put('/api/db/updateCustomer', {
+          customerEmail: currentCheckoutSession.data.customerEmail,
+          currentTransactionId: charges.data[0].id,
+          currentTransactionData: customerTransactions[charges.data[0].id],
         });
       }
     } catch (error) {
