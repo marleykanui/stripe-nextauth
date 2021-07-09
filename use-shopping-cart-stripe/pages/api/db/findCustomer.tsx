@@ -7,15 +7,21 @@ import { NextApiRequest, NextApiResponse } from 'next';
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { db } = await connectToDatabase();
-    const { body } = req;
+    const {
+      body: {
+        params: { customer_email },
+      },
+    } = req;
 
-    const addedCustomerId = await db
+    console.log(customer_email);
+
+    const foundCustomer = await db
       .collection('customerCheckoutSessions')
-      .insertOne(body);
+      .findOne({ customerEmail: customer_email });
 
-    res.status(200).json(addedCustomerId);
+    res.status(200).json(foundCustomer);
   } catch (error) {
-    res.status(500).json({ statusCode: 500, message: error.message });
+    res.status(404).json({ statusCode: 404, message: error.message });
   }
 };
 

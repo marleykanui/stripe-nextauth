@@ -54,22 +54,27 @@ const SessionConfirmation: NextPage = () => {
         payment_intent: { charges },
       },
     } = sessionData;
+
     try {
-      await axios.post('/api/db/createCustomer', {
-        customer_id: customer,
-        customer_email: customer_email,
-        customer_name: charges.data[0].billing_details.name,
-        customer_transactions: [
-          {
-            transaction_id: charges.data[0].id,
-            transaction_date: moment().format('MMMM Do YYYY, h:mm:ss a'),
-            transaction_receipt_url: charges.data[0].receipt_url,
-            payment_method_type: charges.data[0].payment_method_details.type,
-            currency: charges.data[0].currency,
-            purchased_product_data: line_items.data,
-          },
-        ],
+      const currentCustomer = await axios.post('/api/db/findCustomer', {
+        params: { customer_email },
       });
+      if (currentCustomer) {
+        await axios.post('/api/db/createCustomer', {
+          customeId: customer,
+          customerEmail: customer_email,
+          customerTransactions: {
+            [charges.data[0].id]: {
+              transactionReceiptUrl: charges.data[0].receipt_url,
+              transactionDate: moment().format('MMMM Do YYYY, h:mm:ss a'),
+              paymentMethodType: charges.data[0].payment_method_details.type,
+              nameOnCard: charges.data[0].billing_details.name,
+              currency: charges.data[0].currency,
+              purchasedProductData: line_items.data,
+            },
+          },
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -80,7 +85,6 @@ const SessionConfirmation: NextPage = () => {
       dbUpdateWithNewSession(data);
       setDBUpdated(true);
     }
-    console.log(data);
   }, [data]);
 
   if (error) return <div>failed to load</div>;
