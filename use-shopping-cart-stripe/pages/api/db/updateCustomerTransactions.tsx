@@ -4,7 +4,7 @@ import { connectToDatabase } from '@/utils/1-db/mongodb';
 // Next Types
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const updateCustomerTransactionHistory = async (
+const updateCustomerTransactions = async (
   req: NextApiRequest,
   res: NextApiResponse
 ) => {
@@ -20,7 +20,8 @@ const updateCustomerTransactionHistory = async (
     // Define updateFilter
     const updateFilter = { customerEmail };
 
-    // Define updateDocument
+    // Define $set formula to add new data with
+    // currentTransactionId as the key
     const updateDocument = {
       $set: {
         ['customerTransactions.' + currentTransactionId]:
@@ -28,15 +29,9 @@ const updateCustomerTransactionHistory = async (
       },
     };
 
-    // Define updateOptions
-    const updateOptions = { upsert: true };
-
-    // Make update call to specified collection in db
     const updatedCustomerTransactionHistory = await db
       .collection('customerCheckoutSessions')
-      .updateOne(updateFilter, updateDocument, updateOptions);
-
-    console.log(updatedCustomerTransactionHistory.matchedCount);
+      .updateOne(updateFilter, updateDocument);
 
     res.status(200).json(updatedCustomerTransactionHistory);
   } catch (error) {
@@ -44,4 +39,4 @@ const updateCustomerTransactionHistory = async (
   }
 };
 
-export default updateCustomerTransactionHistory;
+export default updateCustomerTransactions;

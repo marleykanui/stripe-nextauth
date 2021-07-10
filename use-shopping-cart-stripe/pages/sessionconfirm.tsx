@@ -26,6 +26,7 @@ const SessionConfirmation: NextPage = () => {
   const [DBUpdated, setDBUpdated] = useState(false);
   const router = useRouter();
 
+  //
   const getSessionData = async (sessionUrl: string) => {
     try {
       const sessionData = await axios.get(sessionUrl);
@@ -35,6 +36,7 @@ const SessionConfirmation: NextPage = () => {
     }
   };
 
+  // Retreive Session Data from URL query string
   const { data, error } = useSWR(
     router.query.session_id
       ? `/api/checkout_sessions/${router.query.session_id}`
@@ -48,44 +50,53 @@ const SessionConfirmation: NextPage = () => {
         customer,
         customer_email,
         line_items,
+        amount_total,
         payment_intent: { charges },
       },
     } = sessionData;
 
+    // Set Up Customer Transaction model
+    const customerTransactions = {
+      [charges.data[0].id]: {
+        transactionReceiptUrl: charges.data[0].receipt_url,
+        transactionDate: moment().format('MMMM Do YYYY, h:mm:ss a'),
+        purchaseAmount: amount_total,
+        purchaseAmountInUsd: `$${amount_total / 100}.00`,
+        paymentMethodType: charges.data[0].payment_method_details.type,
+        nameOnCard: charges.data[0].billing_details.name,
+        currency: charges.data[0].currency,
+        purchasedProductData: line_items.data,
+      },
+    };
+
     try {
-      // Compare current session data to DB data
+      // Check if current customer already exist in DB
       const currentCheckoutSession = await axios.post('/api/db/findCustomer', {
         params: { customer_email },
       });
 
-      // Set Up Customer Transaction model
-      const customerTransactions = {
-        [charges.data[0].id]: {
-          transactionReceiptUrl: charges.data[0].receipt_url,
-          transactionDate: moment().format('MMMM Do YYYY, h:mm:ss a'),
-          paymentMethodType: charges.data[0].payment_method_details.type,
-          nameOnCard: charges.data[0].billing_details.name,
-          currency: charges.data[0].currency,
-          purchasedProductData: line_items.data,
-        },
-      };
+      // Check if current transaction id is already in
+      // customerTransactions object, covert to boolean,
+      // and store in variable for later use
+      const isDocumentedTransaction = Boolean(
+        currentCheckoutSession.data.customerTransactions[charges.data[0].id]
+      );
 
-      // If no correlative DB data found: create a new customer w/ transaction history
+      // If no correlative DB data found:
       if (!currentCheckoutSession.data) {
+        // create a new customer w/ initial transaction
         await axios.post('/api/db/createCustomer', {
           customeId: customer,
           customerEmail: customer_email,
           customerTransactions,
         });
-        // make sure current transaction id is not in
-        // customer profile already,
-        // if not, append to transaction history object
-      } else if (
-        !Boolean(
-          currentCheckoutSession.data.customerTransactions[charges.data[0].id]
-        )
-      ) {
-        await axios.put('/api/db/updateCustomer', {
+        // else if customer already exists in DB
+        // and the current session transactionID is NOT
+        // in the customerTransactions object yet
+      } else if (!isDocumentedTransaction) {
+        // append new transaction to customerTransactions object
+        // in pre-existing customer object
+        await axios.put('/api/db/updateCustomerTransactions', {
           customerEmail: currentCheckoutSession.data.customerEmail,
           currentTransactionId: charges.data[0].id,
           currentTransactionData: customerTransactions[charges.data[0].id],
