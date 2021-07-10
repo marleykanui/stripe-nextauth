@@ -23,10 +23,13 @@ import ClearCart from '@/components/cart/3-components/ClearCart';
 import { NextPage } from 'next';
 
 const SessionConfirmation: NextPage = () => {
+  // Change when db has been updated
   const [DBUpdated, setDBUpdated] = useState(false);
+
+  // Access router to get URL
   const router = useRouter();
 
-  //
+  // Session Data Retrieve function
   const getSessionData = async (sessionUrl: string) => {
     try {
       const sessionData = await axios.get(sessionUrl);

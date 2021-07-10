@@ -13,10 +13,7 @@ import axios from 'axios';
 // React Types
 import { FC, FormEventHandler } from 'react';
 
-// Component Level Types
-import { ProductsProps } from '@/components/cart/0-types/ProductProps';
-
-const CartSummary: FC<ProductsProps> = ({ products }) => {
+const CartSummary: FC = () => {
   const [session, loading] = useSession();
   const [cartEmpty, setCartEmpty] = useState(true);
   const {
