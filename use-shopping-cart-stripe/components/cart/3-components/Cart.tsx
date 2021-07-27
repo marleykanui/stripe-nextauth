@@ -1,8 +1,8 @@
 // Use-Shopping-Cart
 import { CartProvider } from "use-shopping-cart";
 
-// Stripe Instance
-import getStripe from "@/utils/3-stripe/getStripe";
+// Stripe Key
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
 // Cart Config Params
 import * as config from "@/config/index";
@@ -17,7 +17,7 @@ const Cart: FC<CartProps> = ({ children }) => {
   return (
     <CartProvider
       mode="checkout-session"
-      stripe={getStripe()}
+      stripe={stripeKey}
       currency={config.CURRENCY}
     >
       <>{children}</>
